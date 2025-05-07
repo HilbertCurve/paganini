@@ -25,17 +25,22 @@ Some notes:
   - To make sure file handles, large buffers, and other expensive objects are managed well, systems hold allocated
     resources for graceful deletion. 
   - A system is attached to the app, starts, updates, and stops.
+  - A view into the application's active entities.
 - Updates and plugins can be written as a custom system with new entities and components.
 - Some packages that need to be installed can be installed on Linux-based systems using:
 ```bash
-sudo apt-get install build-essential libxmu-dev libxi-dev libgl-dev libglfw3-dev
+sudo apt-get install build-essential libxmu-dev libxi-dev libgl-dev libglfw3-dev libopenal-dev
 ```
+- When including OpenAL headers, make sure to `#include <al.h>`. The exact path for the header's include varies between
+  platforms, but CMake exposes it directly in each case.
 
 ## Progress:
 
-- [ ] `system`, `entity`, and `component` drafted.
-- [ ] Window displaying
-- [ ] Input system
-- [ ] Renderer system
+- [x] `system`, `entity`, and `component` drafted - now made better!
+- [x] Window displaying
+- [x] Input system
+- [x] Renderer system
 - [ ] Audio system
 - [ ] UI system
+- [ ] Track editor
+- [ ] MORE!!!

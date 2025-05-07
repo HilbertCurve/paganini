@@ -40,8 +40,8 @@ if (!(x))\
 {\
 fprintf(stderr, "\x1B[01m\x1B[31mERROR: Assertion failed at file %s, line %d:\x1B[0m ",\
 __FILE__, __LINE__);\
-fprintf(reason __VA_OPT__(,) __VA_ARGS__);\
-fprintf("\n");\
+fprintf(stderr, reason __VA_OPT__(,) __VA_ARGS__);\
+fprintf(stderr, "\n");\
 exit(-1);\
 }
 

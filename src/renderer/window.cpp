@@ -6,6 +6,7 @@
 #include "common.h"
 
 #include "core/app.h"
+#include "io/input.h"
 
 namespace paganini {
     window::window() {
@@ -23,6 +24,10 @@ namespace paganini {
         }
 
         glfwMakeContextCurrent(back);
+
+        glfwSetKeyCallback(back, input::_key_callback);
+        glfwSetCursorPosCallback(back, input::_mouse_callback);
+        glfwSetScrollCallback(back, input::_scroll_callback);
     }
 
     window::~window() {

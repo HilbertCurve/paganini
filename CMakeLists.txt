@@ -8,8 +8,12 @@ add_executable(paganini
         vendor/glad/include/glad/glad.h
 
         src/main.cpp
+        src/audio/sound_board.cpp
+        src/audio/sound_board.h
         src/renderer/renderer.cpp
         src/renderer/renderer.h
+        src/renderer/renderable.cpp
+        src/renderer/renderable.h
         src/core/system.cpp
         src/core/system.h
         src/core/entity.cpp
@@ -27,6 +31,10 @@ add_executable(paganini
         src/renderer/vertex_buffer.cpp
         src/renderer/vertex_buffer.h
         src/common.h
+        src/io/input.cpp
+        src/io/input.h
+        src/audio/wav_file.cpp
+        src/audio/wav_file.h
 )
 
 include(FetchContent)
@@ -40,6 +48,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(glm)
 
 find_package(glfw3 REQUIRED)
+find_package(OpenAL REQUIRED)
 
 target_include_directories(paganini PRIVATE src vendor/glad/include)
-target_link_libraries(paganini PRIVATE glfw3 glm::glm)
+target_link_libraries(paganini PRIVATE glfw3 glm::glm OpenAL::OpenAL)

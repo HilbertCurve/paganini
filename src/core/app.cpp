@@ -11,8 +11,10 @@
 
 namespace paganini {
     void app::init() {
-        for (auto *s : systems)
+        for (auto *s : systems) {
+            s->entities = &this->entities;
             s->start();
+        }
     }
 
     void app::run() {
@@ -21,6 +23,10 @@ namespace paganini {
         double dt = t0;
         while (!this->closing) {
             t0 = glfwGetTime();
+
+            for (auto &e : entities) {
+                e->update(dt);
+            }
 
             for (const auto& s : systems) {
                 s->update(dt);

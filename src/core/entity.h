@@ -6,23 +6,36 @@
 #include <memory>
 #include <vector>
 
+#include "common.h"
+
 namespace paganini {
+    class component;
 
-class component;
+    class entity {
+    public:
+        virtual ~entity() = default;
 
-class entity {
-public:
-    virtual ~entity() = default;
+        virtual void start() = 0;
 
-    virtual void start() = 0;
-    virtual void update(double dt);
-    virtual void stop();
+        virtual void update(double dt);
 
-protected:
-    std::vector<component *> components{};
-    std::string name;
-};
+        virtual void stop();
 
+        template<typename T>
+        T *get() {
+            for (auto *c : components) {
+                T *casted = dynamic_cast<T *>(c);
+                if (!casted) continue;
+                return casted;
+            }
+
+            return nullptr;
+        }
+
+    protected:
+        std::vector<component *> components{};
+        std::string name;
+    };
 } // paganini
 
 #endif //ENTITY_H

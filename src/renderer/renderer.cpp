@@ -5,6 +5,7 @@
 #include <cstring>
 
 #include "common.h"
+#include "renderable.h"
 
 #include "vertex_buffer.h"
 #include "window.h"
@@ -13,13 +14,17 @@
 namespace paganini {
     void enable_attributes() {
         int offset = 0;
-        _p_gl_call(glVertexAttribPointer, 0, POSITION_COUNT, GL_FLOAT, GL_FALSE, sizeof(vertex_buffer::vertex), reinterpret_cast<void *>(offset));
+        _p_gl_call(glVertexAttribPointer, 0, POSITION_COUNT, GL_FLOAT, GL_FALSE, sizeof(vertex_buffer::vertex),
+                   reinterpret_cast<void *>(offset));
         offset += POSITION_COUNT * sizeof(float);
-        _p_gl_call(glVertexAttribPointer, 1, COLOR_COUNT,    GL_FLOAT, GL_FALSE, sizeof(vertex_buffer::vertex), reinterpret_cast<void *>(offset));
+        _p_gl_call(glVertexAttribPointer, 1, COLOR_COUNT, GL_FLOAT, GL_FALSE, sizeof(vertex_buffer::vertex),
+                   reinterpret_cast<void *>(offset));
         offset += COLOR_COUNT * sizeof(float);
-        _p_gl_call(glVertexAttribPointer, 2, UV_COUNT,       GL_FLOAT, GL_FALSE, sizeof(vertex_buffer::vertex), reinterpret_cast<void *>(offset));
+        _p_gl_call(glVertexAttribPointer, 2, UV_COUNT, GL_FLOAT, GL_FALSE, sizeof(vertex_buffer::vertex),
+                   reinterpret_cast<void *>(offset));
         offset += UV_COUNT * sizeof(float);
-        _p_gl_call(glVertexAttribPointer, 3, TEX_ID_COUNT,   GL_INT,   GL_FALSE, sizeof(vertex_buffer::vertex), reinterpret_cast<void *>(offset));
+        _p_gl_call(glVertexAttribPointer, 3, TEX_ID_COUNT, GL_INT, GL_FALSE, sizeof(vertex_buffer::vertex),
+                   reinterpret_cast<void *>(offset));
 
         for (int i = 0; i < LAYOUT_COUNT; i++) {
             _p_gl_call(glEnableVertexAttribArray, i);
@@ -150,14 +155,11 @@ namespace paganini {
             _p_gl_call(glClearColor, 0.2f, 0.3f, 0.3f, 1.0f);
             _p_gl_call(glClear, GL_COLOR_BUFFER_BIT);
 
-            buffer->put_rect({-0.8, -0.8, 0.0}, {1.6, 1.6}, {0.1f, 0.14f, 0.24f, 1.0f});
-
-            buffer->put({-0.4, -0.4, 1.0}, {0.1f, 0.54f, 0.24f, 1.0f}, {0.0, 0.0}, 0);
-            buffer->indices[buffer->index_count++] = buffer->vert_count - 1;
-            buffer->put({-0.0, 0.4, 1.0}, {0.4f, 0.14f, 0.24f, 1.0f}, {0.0, 0.0}, 0);
-            buffer->indices[buffer->index_count++] = buffer->vert_count - 1;
-            buffer->put({0.4, -0.4, 1.0}, {0.9f, 0.14f, 0.24f, 1.0f}, {0.0, 0.0}, 0);
-            buffer->indices[buffer->index_count++] = buffer->vert_count - 1;
+            for (entity *e : *entities) {
+                if (renderable *r = e->get<renderable>()) {
+                    r->fill_buffer(*this->buffer);
+                }
+            }
 
             this->render();
 
@@ -171,7 +173,8 @@ namespace paganini {
 
     void renderer::render() const {
         _p_gl_call(glBindBuffer, GL_ARRAY_BUFFER, this->buffer->vbo);
-        _p_gl_call(glBufferData, GL_ARRAY_BUFFER, this->buffer->vert_count * LAYOUT_SIZE, this->buffer->data, GL_DYNAMIC_DRAW);
+        _p_gl_call(glBufferData, GL_ARRAY_BUFFER, this->buffer->vert_count * LAYOUT_SIZE, this->buffer->data,
+                   GL_DYNAMIC_DRAW);
         _p_gl_call(glBindVertexArray, this->buffer->vao);
         _p_gl_call(glBindBuffer, GL_ELEMENT_ARRAY_BUFFER, this->buffer->ebo);
         _p_gl_call(
@@ -221,6 +224,7 @@ namespace paganini {
     }
 
     renderer::~renderer() {
+        this->resources.erase("window");
         glfwTerminate();
     }
 } // paganini

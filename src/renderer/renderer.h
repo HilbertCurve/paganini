@@ -14,8 +14,7 @@
     func(args);\
     if (glGetError() != 0)\
         printf("GL Error with function %s at %s:%d \n", #func, __FILE__, __LINE__);\
-}\
-
+}
 #define _p_gl_call_paganini_defined
 #endif
 
@@ -27,36 +26,33 @@
     if (glGetError() != 0)\
         printf("GL Error received calling function %s: \n", #func);\
     val;\
-})\
-
+})
 #define _p_gl_call_paganini_defined
 #endif
 
 namespace paganini {
+    class renderer final : public system {
+    public:
+        renderer();
 
-class renderer final : public system {
-public:
-    renderer();
+        ~renderer() override;
 
-    ~renderer() override;
+        void start() override;
 
-    void start() override;
+        void update(double dt) override;
 
-    void update(double dt) override;
+        void render() const;
 
-    void render() const;
+        void clean() override;
 
-    void clean() override;
+        vertex_buffer *buffer;
 
-    vertex_buffer *buffer;
+    private:
+        static renderer *_inst;
 
-private:
-    static renderer *_inst;
-
-    // opengl shader ids
-    GLuint vertex_id{}, fragment_id{}, shader_id{};
-};
-
+        // opengl shader ids
+        GLuint vertex_id{}, fragment_id{}, shader_id{};
+    };
 } // paganini
 
 #endif //RENDERER_H
